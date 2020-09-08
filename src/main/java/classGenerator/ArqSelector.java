@@ -14,7 +14,7 @@ import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
+import classGenerator.FuFile;
 
 
 /**
@@ -23,6 +23,7 @@ import java.util.Scanner;
  */
 public class ArqSelector {
 	
+	private FuFile f;
 
 	ArqSelector (){
 		
@@ -39,13 +40,8 @@ public class ArqSelector {
 		});
 
 		System.out.println("\n\n Directory of " + dir.getAbsolutePath());
-		if (dir.getName().contains("ClasseMaiuscula")){
-			File replace = dir;
-			replace = new File(dir.getPath().replace("ClasseMaiuscula", "TestandoAqui"));
-			System.out.println("Renaming: " + dir.getPath() +" to " + replace.getPath() + "\n____");
-			// Boolean b = dir.renameTo(replace);
-			// System.out.println("b: " + b + "\n____");
-		}
+		System.out.println("FuFile.changeName(dir, \"novo\");: " + FuFile.changeName(dir, "ClasseMaiuscula", "novaPasta") + "\n____");
+
 		listFile(dir);
 		// for (File folder: subDir) {
 		// 	listFolder(folder);
@@ -85,13 +81,7 @@ public class ArqSelector {
 			System.out.println("Error closing the file. Program shutting down.");
 		}   
 		if (dir.getName().contains("ClasseMaiuscula")){
-			File replace = dir;
-			// String path = ;
-			// path = ;
-			replace = new File(dir.getPath().replace("ClasseMaiuscula", "TestandoAqui"));
-			System.out.println("Renaming: " + dir.getPath() +" to " + replace.getPath() + "\n____");
-			// Boolean b = dir.renameTo(replace);
-			// System.out.println("b: " + b + "\n____");
+			System.out.println("FuFile.changeName " + FuFile.changeName(dir, "ClasseMaiuscula", "NovaClasse") + "\n____");
 		}
 
 		// buffWrite(dir, lines);

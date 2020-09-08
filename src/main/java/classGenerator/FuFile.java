@@ -4,16 +4,29 @@ import java.io.File;
 
 public class FuFile {
 
-	public File changeName (File file, String newName) {
-		if (file.getName().contains(newName)){
-			file = new File(file.getParent()+newName);
+	public static File changeName (File file, String newName) {
+			file = new File(file.getParent()+"/"+newName);
+
+		return file;
+	}
+
+	public static File replaceFile (File file, String newName){
+			File replace = new File(file.getParent()+"/"+newName);
+			Boolean b = file.renameTo(replace);
+
+			return b ? replace : null;
+
+	}
+	public static File changeName (File file, String oldName, String newName) {
+		if (file.getName().contains(oldName)){
+			file = new File(file.getParent()+"/"+file.getName().replace(oldName, newName));
 		}
 		return file;
 	}
 
-	public File replaceFile (File file, String newName){
-		if (file.getName().contains(newName)){
-			File replace = new File(file.getParent()+newName);
+	public static File replaceFile (File file, String oldName, String newName){
+		if (file.getName().contains(oldName)){
+			File replace = new File(file.getParent()+"/"+file.getName().replace(oldName, newName));
 			Boolean b = file.renameTo(replace);
 
 			return b ? replace : null;
