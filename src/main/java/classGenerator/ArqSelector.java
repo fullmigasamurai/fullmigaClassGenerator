@@ -39,6 +39,13 @@ public class ArqSelector {
 		});
 
 		System.out.println("\n\n Directory of " + dir.getAbsolutePath());
+		if (dir.getName().contains("ClasseMaiuscula")){
+			File replace = dir;
+			replace = new File(dir.getPath().replace("ClasseMaiuscula", "TestandoAqui"));
+			System.out.println("Renaming: " + dir.getPath() +" to " + replace.getPath() + "\n____");
+			// Boolean b = dir.renameTo(replace);
+			// System.out.println("b: " + b + "\n____");
+		}
 		listFile(dir);
 		// for (File folder: subDir) {
 		// 	listFolder(folder);
@@ -79,17 +86,13 @@ public class ArqSelector {
 		}   
 		if (dir.getName().contains("ClasseMaiuscula")){
 			File replace = dir;
-			String path = dir.getPath();
-			path = path.replace("ClasseMaiuscula", "TestandoAqui");
-			replace = new File(path);
-			// System.out.println("replace.getAbsolutePath(): " + replace.getAbsolutePath() + "\n____");
-			// System.out.println("replace.getPath(): " + replace.getPath() + "\n____");
-			// System.out.println("replace.getName(): " + replace.getName() + "\n____");
-			// System.out.println("replace.getParentFile(): " + replace.getParentFile() + "\n____");
+			// String path = ;
+			// path = ;
+			replace = new File(dir.getPath().replace("ClasseMaiuscula", "TestandoAqui"));
 			System.out.println("Renaming: " + dir.getPath() +" to " + replace.getPath() + "\n____");
+			// Boolean b = dir.renameTo(replace);
+			// System.out.println("b: " + b + "\n____");
 		}
-		// Boolean b = dir.renameTo(replace);
-		// System.out.println("b: " + b + "\n____");
 
 		// buffWrite(dir, lines);
 		

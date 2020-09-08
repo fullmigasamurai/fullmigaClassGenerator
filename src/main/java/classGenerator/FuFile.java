@@ -2,7 +2,7 @@ package classGenerator;
 
 import java.io.File;
 
-public class FuFile extends {
+public class FuFile {
 
 	private File file;
 
@@ -24,8 +24,8 @@ public class FuFile extends {
 	public File changeName (String oldName, String newName) {
 		if (this.file.getName().contains("oldName")){
 			this.file = new File(this.file.getParent()+newName);
-			return file;
 		}
+		return this.file;
 	}
 
 	public boolean replaceFile (String oldName, String newName){
