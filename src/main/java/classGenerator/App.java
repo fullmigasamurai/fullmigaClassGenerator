@@ -18,9 +18,9 @@ public final class App {
         // TelaInicial tela = new TelaInicial();
 		// tela.setVisible(true);
 		
-		ArqSelector a = new ArqSelector("./tmp");
-		// a.ListPath();
-		// a.listFolder(new java.io.File("./tmp"));
-		a.listPath(new java.io.File("./tmp"));
+		ArqSelector a = new ArqSelector();
+		a.listFolder(new java.io.File("./tmp/ClasseMaiuscula"));
+		FuFile f = new FuFile("./tmp/ClasseMaiuscula");
+		
     }
 }

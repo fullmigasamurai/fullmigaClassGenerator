@@ -1,8 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+* To change this license header, choose License Headers in Project Properties.
+* To change this template file, choose Tools | Templates
+* and open the template in the editor.
+*/
 package classGenerator;
 
 import java.io.BufferedReader;
@@ -13,50 +13,24 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.stream.Stream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 
 /**
  *
  * @author Toph
  */
 public class ArqSelector {
-    
-	private static File arq;
+	
 
-	ArqSelector (String path){
-		
-		arq = new File(path);
-
+	ArqSelector (){
 		
 		
 	}
 
-	public static void listPath (File dir) {
-
-		try {
-			System.out.println("paths");
-			// Files.list(Paths.get(dir.getAbsolutePath())).forEach(System.out::println);
-
-			Path p = Paths.get(dir.getAbsolutePath());
-			Stream<Path> f = Files.list(p);
-			// f.forEach(System.out::println);
-			f.forEach(s -> System.out.println(s.toAbsolutePath()));
-			f.forEach(s -> listPath((s.toAbsolutePath().toFile())));
-			
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
 
 	public void listFolder (File dir) {
-		System.out.print("paths");
 		File[] subDir = dir.listFiles(new FileFilter(){
 			@Override
 			public boolean accept(File pathname) {
@@ -64,74 +38,87 @@ public class ArqSelector {
 			}
 		});
 
-		System.out.println("\n Directory of " + dir.getAbsolutePath());
+		System.out.println("\n\n Directory of " + dir.getAbsolutePath());
 		listFile(dir);
+		// for (File folder: subDir) {
+		// 	listFolder(folder);
+		// }
 
-		for (File folder: subDir) {
-			listFolder(folder);
-		}
 	}
 	private void listFile (File dir){
 		File[] files = dir.listFiles();
 		for (File file : files){
-			System.out.println(file.getName());
+			if(file.getName().contains(".java")) {
+				System.out.println(file.getName());
+				buffRead(file);
+			}
 		}
 	}
 
-	public void write () {
-		try {
-			FileWriter myWriter = new FileWriter("filename.txt");
-			myWriter.write("Files in Java might be tricky, but it is fun enough!");
-			myWriter.close();
-			System.out.println("Successfully wrote to the file.");
-		  } catch (IOException e) {
-			System.out.println("An error occurred.");
-			e.printStackTrace();
-		  }
-	}
-
-	public void read () {
-		try {
-			File myObj = new File("filename.txt");
-			Scanner myReader = new Scanner(myObj);
-			while (myReader.hasNextLine()) {
-			  String data = myReader.nextLine();
-			  System.out.println(data);
-			}
-			myReader.close();
-		  } catch (FileNotFoundException e) {
-			System.out.println("An error occurred.");
-			e.printStackTrace();
-		  }
-	}
-
-	public void buffRead () {
+	public void buffRead (File dir) {
 		
-
-		System.out.println("arq.: " + arq.getAbsolutePath() + "\n____");
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(arq));
+		
+		String nextLine = null;
+		ArrayList<String> lines = new ArrayList<String>();
+		System.out.println("dir.getName(): " + dir.getPath() + "\n____");                     
+		try (BufferedReader br = new BufferedReader(new FileReader(dir))) {   
 			try {
-				String nextLine;
-				while ((nextLine = reader.readLine()) != null) {
-					System.out.println("nextLine: " + nextLine + "\n____");
+				while ((nextLine = br.readLine()) != null) {
+					lines.add(nextLine);
 				}   
 			}            
 			catch(IOException e) {
-				System.out.print("Error reading file. Try another ('q' to quit, 'a' for available).\n: ");  
+				System.out.print("Error reading file. Try another).\n: ");  
 			}            
-
-		} catch (IOException io){
-			System.out.println("cach ioex");
+		}   
+		catch(FileNotFoundException e) {
+			System.out.print("File doesn't exist. Try again).\n: ");
+		}      
+		catch(IOException e) {
+			System.out.println("Error closing the file. Program shutting down.");
+		}   
+		if (dir.getName().contains("ClasseMaiuscula")){
+			File replace = dir;
+			String path = dir.getPath();
+			path = path.replace("ClasseMaiuscula", "TestandoAqui");
+			replace = new File(path);
+			// System.out.println("replace.getAbsolutePath(): " + replace.getAbsolutePath() + "\n____");
+			// System.out.println("replace.getPath(): " + replace.getPath() + "\n____");
+			// System.out.println("replace.getName(): " + replace.getName() + "\n____");
+			// System.out.println("replace.getParentFile(): " + replace.getParentFile() + "\n____");
+			System.out.println("Renaming: " + dir.getPath() +" to " + replace.getPath() + "\n____");
 		}
+		// Boolean b = dir.renameTo(replace);
+		// System.out.println("b: " + b + "\n____");
+
+		// buffWrite(dir, lines);
 		
 	}
 
-	public void buffWrite (String path , File file){
+	public void buffWrite (File file , ArrayList<String> lines) {
 
-		// BufferedWriter writer 
+		System.out.println("file.getPath(): " + file.getPath() + "\n____");
+		try (BufferedWriter buffWriter = new BufferedWriter(new FileWriter(file))) {
+
+			for (String s : lines) {
+				buffWriter.write(s);
+				buffWriter.newLine();
+			}      
+		} catch (IOException io) {
+
+		}
 	}
 
+	public void delte (File dir){
 
-    
+		File myObj = new File("filename.txt"); 
+		if (myObj.delete()) { 
+		System.out.println("Deleted the file: " + myObj.getName());
+		} else {
+		System.out.println("Failed to delete the file.");
+		} 
+	} 
+
+
+	
 }
