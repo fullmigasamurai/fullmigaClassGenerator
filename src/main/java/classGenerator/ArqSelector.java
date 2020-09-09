@@ -14,7 +14,8 @@ import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import classGenerator.FuFile;
+// import classGenerator.FuFile;
+import java.util.HashMap;
 
 
 /**
@@ -23,10 +24,18 @@ import classGenerator.FuFile;
  */
 public class ArqSelector {
 	
-	private FuFile f;
+	// private FuFile f;
+	private HashMap<String, String> changes;
 
 	ArqSelector (){
+		changes = new HashMap<String, String>();
+		changes.put("ClasseMaiuscula", "NovoMaiusculo");
+		changes.put("classeMinuscula", "novoMinusculo");
+		changes.put("classe_underline", "novo_underline");
 		
+		// changes.put("NovoMaiusculo", "ClasseMaiuscula");
+		// changes.put("novoMinusculo", "classeMinuscula");
+		// changes.put("novo_underline", "classe_underline");
 		
 	}
 
@@ -41,21 +50,42 @@ public class ArqSelector {
 		System.out.println("\n\n Directory of " + dir.getAbsolutePath());
 
 		
-		// listFile(dir);
 		for (File folder: subDir) {
 			listFolder(folder);
 		}
-
-		System.out.println("FuFile.changeName: " + FuFile.changeName(dir, "ClasseMaiuscula", "novaPasta") + "\n____");
-		dir = FuFile.replaceFile(dir, "ClasseMaiuscula", "NovoNome");
+		int a;
+		// changes.forEach((oldName, newName) -> {
+		// 	System.out.println("FuFile.ChangeFoldername: " + FuFile.changeName(dir, oldName, newName) + "\n____");
+		// 	dir = FuFile.replaceFile(dir, "ClasseMaiuscula", "NovoNome");
+		// 	a=3;
+		// });
+		
+		for(HashMap.Entry<String, String> entry : changes.entrySet()) {
+			String oldName = entry.getKey();
+			String newName = entry.getValue();
+			System.out.println("FuFile.ChangeFoldername: " + FuFile.changeName(dir, oldName, newName) + "\n____");
+			// dir = FuFile.replaceFile(dir, oldName, newName);
+		}
+		
+		
+		listFile(dir);
 
 	}
+
 	private void listFile (File dir){
 		File[] files = dir.listFiles();
 		for (File file : files){
 			if(file.getName().contains(".java")) {
-				System.out.println(file.getName());
-				buffRead(file);
+				for(HashMap.Entry<String, String> entry : changes.entrySet()) {
+					String oldName = entry.getKey();
+					String newName = entry.getValue();
+					if (dir.getName().contains("ClasseMaiuscula")){
+						System.out.println("FuFile.changeClassName " + FuFile.changeName(dir, oldName, newName) + "\n____");
+						// dir = FuFile.replaceFile(dir, oldName, newName);
+					}
+					System.out.println("filename: " + file.getName());
+				}
+				// buffRead(file);
 			}
 		}
 	}
@@ -82,9 +112,7 @@ public class ArqSelector {
 		catch(IOException e) {
 			System.out.println("Error closing the file. Program shutting down.");
 		}   
-		if (dir.getName().contains("ClasseMaiuscula")){
-			System.out.println("FuFile.changeName " + FuFile.changeName(dir, "ClasseMaiuscula", "NovaClasse") + "\n____");
-		}
+		
 
 		// buffWrite(dir, lines);
 		
@@ -104,7 +132,7 @@ public class ArqSelector {
 		}
 	}
 
-	public void delte (File dir){
+	public void delete (File dir){
 
 		File myObj = new File("filename.txt"); 
 		if (myObj.delete()) { 
