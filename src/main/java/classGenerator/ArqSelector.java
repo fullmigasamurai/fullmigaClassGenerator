@@ -38,14 +38,16 @@ public class ArqSelector {
 				return pathname.isDirectory();
 			}
 		});
-
 		System.out.println("\n\n Directory of " + dir.getAbsolutePath());
-		System.out.println("FuFile.changeName(dir, \"novo\");: " + FuFile.changeName(dir, "ClasseMaiuscula", "novaPasta") + "\n____");
 
-		listFile(dir);
-		// for (File folder: subDir) {
-		// 	listFolder(folder);
-		// }
+		
+		// listFile(dir);
+		for (File folder: subDir) {
+			listFolder(folder);
+		}
+
+		System.out.println("FuFile.changeName: " + FuFile.changeName(dir, "ClasseMaiuscula", "novaPasta") + "\n____");
+		dir = FuFile.replaceFile(dir, "ClasseMaiuscula", "NovoNome");
 
 	}
 	private void listFile (File dir){
