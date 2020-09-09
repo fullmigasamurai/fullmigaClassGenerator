@@ -20,7 +20,6 @@ public final class App {
 		
 		ArqSelector a = new ArqSelector();
 		a.listFolder(new java.io.File("./tmp/NovaPasta"));
-		// FuFile f = new FuFile("./tmp/ClasseMaiuscula");
 		
     }
 }

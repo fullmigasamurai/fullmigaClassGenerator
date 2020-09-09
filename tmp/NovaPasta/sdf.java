@@ -1,6 +1,6 @@
-package domain.classeMinuscula;
+package domain.novoMinusculo;
 
-import domain.classeMinuscula.models.ClasseMaiuscula;
+import domain.novoMinusculo.models.NovoMaiusculo;
 import br.edu.ufgd.infra.validation.ValidationInterface;
 import br.edu.ufgd.infra.validation.ValidationPlay;
 import org.junit.Test;
@@ -14,16 +14,16 @@ import java.util.List;
  *
  * @author Iel Rebeque
  */
-public class ClasseMaiusculaTest extends UnitTest {
+public class NovoMaiusculoTest extends UnitTest {
 
 	@Test
-	public void deveValidarCamposVaziosDeClasseMaiuscula() {
+	public void deveValidarCamposVaziosDeNovoMaiusculo() {
 
-		ClasseMaiuscula ClasseMaiuscula = new ClasseMaiuscula(null, null);
+		NovoMaiusculo NovoMaiusculo = new NovoMaiusculo(null, null);
 
 		try {
 			ValidationInterface validation = new ValidationPlay();
-			validation.valid("ClasseMaiuscula", ClasseMaiuscula).throwIfErrors();
+			validation.valid("NovoMaiusculo", NovoMaiusculo).throwIfErrors();
 
 			fail("Deveria atirar erro!");
 
@@ -31,25 +31,25 @@ public class ClasseMaiusculaTest extends UnitTest {
 			assertEquals(3, Validation.errors().size());
 
 			List<Error> errors = Validation.errors();
-			assertEquals("ClasseMaiuscula.descricao", errors.get(0).getKey());
+			assertEquals("NovoMaiusculo.descricao", errors.get(0).getKey());
 			assertEquals("O campo descricao é obrigatório!", errors.get(0).message());
 			
-			assertEquals("ClasseMaiuscula.idUsuarioCadastro", errors.get(1).getKey());
+			assertEquals("NovoMaiusculo.idUsuarioCadastro", errors.get(1).getKey());
 			assertEquals("O campo idUsuarioCadastro é obrigatório!", errors.get(1).message());
 			
-			assertEquals("ClasseMaiuscula", errors.get(2).getKey());
+			assertEquals("NovoMaiusculo", errors.get(2).getKey());
 			assertEquals("Erro: Há campos inválidos no formulário", errors.get(2).message());
 		}
 	}
 
 	@Test
-	public void deveValidarIdUsuarioCadastroVazioEmClasseMaiuscula() {
+	public void deveValidarIdUsuarioCadastroVazioEmNovoMaiusculo() {
 
-		ClasseMaiuscula ClasseMaiuscula = new ClasseMaiuscula("Descricao", null);
+		NovoMaiusculo NovoMaiusculo = new NovoMaiusculo("Descricao", null);
 
 		try {
 			ValidationInterface validation = new ValidationPlay();
-			validation.valid("ClasseMaiuscula", ClasseMaiuscula).throwIfErrors();
+			validation.valid("NovoMaiusculo", NovoMaiusculo).throwIfErrors();
 
 			fail("Deveria atirar erro!");
 
@@ -58,10 +58,10 @@ public class ClasseMaiusculaTest extends UnitTest {
 
 			List<Error> errors = Validation.errors();
 			
-			assertEquals("ClasseMaiuscula.idUsuarioCadastro", errors.get(0).getKey());
+			assertEquals("NovoMaiusculo.idUsuarioCadastro", errors.get(0).getKey());
 			assertEquals("O campo idUsuarioCadastro é obrigatório!", errors.get(0).message());
 			
-			assertEquals("ClasseMaiuscula", errors.get(1).getKey());
+			assertEquals("NovoMaiusculo", errors.get(1).getKey());
 			assertEquals("Erro: Há campos inválidos no formulário", errors.get(1).message());
 		}
 

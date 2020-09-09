@@ -32,10 +32,7 @@ public class ArqSelector {
 		changes.put("ClasseMaiuscula", "NovoMaiusculo");
 		changes.put("classeMinuscula", "novoMinusculo");
 		changes.put("classe_underline", "novo_underline");
-		
-		// changes.put("NovoMaiusculo", "ClasseMaiuscula");
-		// changes.put("novoMinusculo", "classeMinuscula");
-		// changes.put("novo_underline", "classe_underline");
+		changes.put("classe-traco", "novo-traco");
 		
 	}
 
@@ -47,26 +44,21 @@ public class ArqSelector {
 				return pathname.isDirectory();
 			}
 		});
-		System.out.println("\n\n Directory of " + dir.getAbsolutePath());
-
+		// System.out.println("\n\nDirectory of " + dir.getAbsolutePath());
 		
 		for (File folder: subDir) {
 			listFolder(folder);
 		}
-		int a;
-		// changes.forEach((oldName, newName) -> {
-		// 	System.out.println("FuFile.ChangeFoldername: " + FuFile.changeName(dir, oldName, newName) + "\n____");
-		// 	dir = FuFile.replaceFile(dir, "ClasseMaiuscula", "NovoNome");
-		// 	a=3;
-		// });
 		
 		for(HashMap.Entry<String, String> entry : changes.entrySet()) {
 			String oldName = entry.getKey();
 			String newName = entry.getValue();
-			System.out.println("FuFile.ChangeFoldername: " + FuFile.changeName(dir, oldName, newName) + "\n____");
-			// dir = FuFile.replaceFile(dir, oldName, newName);
+			if (dir.getName().contains(oldName)){
+				System.out.println("foldername: " + dir.getName());
+				System.out.println("FuFile.ChangeFoldername: " + FuFile.changeName(dir, oldName, newName) + "\n");
+				dir = FuFile.replaceFile(dir, oldName, newName);
+			}
 		}
-		
 		
 		listFile(dir);
 
@@ -79,13 +71,14 @@ public class ArqSelector {
 				for(HashMap.Entry<String, String> entry : changes.entrySet()) {
 					String oldName = entry.getKey();
 					String newName = entry.getValue();
-					if (dir.getName().contains("ClasseMaiuscula")){
-						System.out.println("FuFile.changeClassName " + FuFile.changeName(dir, oldName, newName) + "\n____");
-						// dir = FuFile.replaceFile(dir, oldName, newName);
+					if (file.getName().contains(oldName)){
+						System.out.println("filename: " + file.getName());
+						System.out.println("FuFile.changeClassName " + FuFile.changeName(file, oldName, newName));
+						file = FuFile.replaceFile(file, oldName, newName);
 					}
-					System.out.println("filename: " + file.getName());
+					
 				}
-				// buffRead(file);
+				buffRead(file);
 			}
 		}
 	}
@@ -95,10 +88,15 @@ public class ArqSelector {
 		
 		String nextLine = null;
 		ArrayList<String> lines = new ArrayList<String>();
-		System.out.println("dir.getName(): " + dir.getPath() + "\n____");                     
+		System.out.println("Readind: " + dir.getPath());                     
 		try (BufferedReader br = new BufferedReader(new FileReader(dir))) {   
 			try {
 				while ((nextLine = br.readLine()) != null) {
+					for(HashMap.Entry<String, String> entry : changes.entrySet()) {
+						String oldName = entry.getKey();
+						String newName = entry.getValue();
+						nextLine = nextLine.replaceAll(oldName, newName);
+					}
 					lines.add(nextLine);
 				}   
 			}            
@@ -114,13 +112,13 @@ public class ArqSelector {
 		}   
 		
 
-		// buffWrite(dir, lines);
+		buffWrite(dir, lines);
 		
 	}
 
 	public void buffWrite (File file , ArrayList<String> lines) {
 
-		System.out.println("file.getPath(): " + file.getPath() + "\n____");
+		System.out.println("Writing: " + file.getPath() + "\n____");
 		try (BufferedWriter buffWriter = new BufferedWriter(new FileWriter(file))) {
 
 			for (String s : lines) {
