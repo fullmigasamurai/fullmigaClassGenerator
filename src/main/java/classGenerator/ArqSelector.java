@@ -27,12 +27,18 @@ public class ArqSelector {
 	// private FuFile f;
 	private HashMap<String, String> changes;
 
-	ArqSelector (){
+	public ArqSelector (){
 		changes = new HashMap<String, String>();
 		changes.put("ClasseMaiuscula", "NovoMaiusculo");
 		changes.put("classeMinuscula", "novoMinusculo");
 		changes.put("classe_underline", "novo_underline");
 		changes.put("classe-traco", "novo-traco");
+		
+	}
+
+	public ArqSelector (HashMap<String, String> map){
+		changes = map;
+		
 		
 	}
 
