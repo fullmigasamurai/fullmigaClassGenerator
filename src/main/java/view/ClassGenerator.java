@@ -405,13 +405,13 @@ public class ClassGenerator extends javax.swing.JFrame {
 	private void renameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_renameActionPerformed
 		HashMap<String, String> tableMap = readTable(table);
 		if (tableMap != null) {
-			// ArqSelector arqManipulator = new ArqSelector(tableMap);
-			ArqSelector arqManipulator = new ArqSelector();
+			ArqSelector arqManipulator = new ArqSelector(tableMap);
+			// ArqSelector arqManipulator = new ArqSelector();
 			// if (sourcePath.getText() == "" || sourcePath.getText() == null)
 			// 	arqManipulator.listFolder(new java.io.File(System.getProperty("user.dir")));
 			// else
-			// 	arqManipulator.listFolder(new java.io.File(sourcePath.getText()));
-			arqManipulator.listFolder(new java.io.File("./tmp/NovaPasta"));
+				arqManipulator.listFolder(new java.io.File(sourcePath.getText()));
+			// arqManipulator.listFolder(new java.io.File("./tmp/NovaPasta"));
 		}
 
 
