@@ -277,6 +277,7 @@ public class ClassGenerator extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setForeground(new java.awt.Color(204, 204, 204));
         jLabel1.setText("Path:");
 
         sourcePath.setMaximumSize(new java.awt.Dimension(180, 25));

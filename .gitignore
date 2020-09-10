@@ -12,6 +12,8 @@ buildNumber.properties
 .mvn/timing.properties
 /tmp/
 /tmp
+fullmigaClassGenerator.jar
+
 
 #
 # IntelliJ
