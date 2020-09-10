@@ -44,13 +44,18 @@ public class ClassGenerator extends javax.swing.JFrame {
 
 		try {
 
-			String nextLine;
+			String nextLine, readingErrors="";
 			for (int i = 0; i < 8 && (nextLine = reader.readLine()) != null; i++) {
 				String split[] = nextLine.split(";");
-				table.setValueAt(split[0], i, 0);
-				table.setValueAt(split[1], i, 1);
-
+				if (split.length < 2) {
+					readingErrors+="Erro ao ler a linha " + i+1 + "\n";
+				} else {
+					table.setValueAt(split[0], i, 0);
+					table.setValueAt(split[1], i, 1);
+				}
 			}
+			if (readingErrors != "")
+				JOptionPane.showMessageDialog(this, "Erro ao ler o arquivo, é preciso ter 2 colunas\n"+readingErrors);
 			reader.close();
 			System.out.println("Arq Ready");
 			arqNameLabel.setText(new java.io.File(name).getName().replace(".csv", ""));
@@ -59,12 +64,39 @@ public class ClassGenerator extends javax.swing.JFrame {
 			JOptionPane.showMessageDialog(this, "Erro ao ler o arquivo");
 			return false;
 
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, "Erro ao ler o arquivo");
 		}
 
 		return true;
 	}
+
+	public void saveArq(String nome) {
+        java.io.BufferedWriter writer = null;
+        try {
+            writer = new java.io.BufferedWriter(new java.io.FileWriter(nome + ".csv"));
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Impossivel abrir arquivo para gravação");
+        } finally {
+            try {
+				HashMap<String, String> data = readTable(table);
+				
+				for(HashMap.Entry<String, String> entry : data.entrySet()) {
+					String key = entry.getKey();
+					String value = entry.getValue();
+						writer.write(key+";"+value+";");
+						writer.write(System.getProperty("line.separator"));
+				}
+
+                writer.close();
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Erro, a gravação não foi efetuada com sucesso");
+
+            }
+        }
+    }
 	
-	public void loadCSV() {
+	public void setCSV() {
 
 		javax.swing.JFileChooser arq;
 		arq = new javax.swing.JFileChooser();
@@ -77,7 +109,7 @@ public class ClassGenerator extends javax.swing.JFrame {
 		int retorno = arq.showOpenDialog(null);
 
 		if (retorno == javax.swing.JFileChooser.APPROVE_OPTION) {
-			pathText.setText(arq.getSelectedFile().getAbsolutePath());
+			confPathText.setText(arq.getSelectedFile().getAbsolutePath());
 		} else if (retorno != javax.swing.JFileChooser.CANCEL_OPTION) {
 			JOptionPane.showMessageDialog(rootPane, "Não foi Possivel Abrir o Arquivo");
 		}
@@ -92,17 +124,6 @@ public class ClassGenerator extends javax.swing.JFrame {
 		arq.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
 		arq.setAcceptAllFileFilterUsed(false);
   
-		// if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { 
-		//   System.out.println("getCurrentDirectory(): " 
-		// 	 +  chooser.getCurrentDirectory());
-		//   System.out.println("getSelectedFile() : " 
-		// 	 +  chooser.getSelectedFile());
-		//   }
-		// else {
-		//   System.out.println("No Selection ");
-		//   }
-		//  }
-
 		int retorno = arq.showOpenDialog(this);
 
 		if (retorno == javax.swing.JFileChooser.APPROVE_OPTION) {
@@ -154,7 +175,7 @@ public class ClassGenerator extends javax.swing.JFrame {
 			}
 		}
 		
-		pathText.setText("");
+		confPathText.setText("");
 		arqNameLabel.setText("");
 	}
 
@@ -176,19 +197,21 @@ public class ClassGenerator extends javax.swing.JFrame {
         RightPanel = new javax.swing.JPanel();
         readArq = new javax.swing.JButton();
         generateArq = new javax.swing.JButton();
-        pathText = new javax.swing.JTextField();
+        confPathText = new javax.swing.JTextField();
         rename = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         sourcePath = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
         usingArqLabel = new javax.swing.JLabel();
         arqNameLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(51, 0, 51));
-        setMinimumSize(new java.awt.Dimension(750, 256));
+        setMinimumSize(new java.awt.Dimension(750, 300));
 
         BackGroundPanel.setBackground(new java.awt.Color(0, 51, 51));
 
+        TittleLabe.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         TittleLabe.setForeground(new java.awt.Color(204, 255, 255));
         TittleLabe.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         TittleLabe.setText("ClassGenerator");
@@ -207,7 +230,7 @@ public class ClassGenerator extends javax.swing.JFrame {
                 {null, null}
             },
             new String [] {
-                "Title 1", "Title 2"
+                "OldName", "NewName"
             }
         ));
         table.setGridColor(new java.awt.Color(0, 0, 0));
@@ -225,7 +248,7 @@ public class ClassGenerator extends javax.swing.JFrame {
             TablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(ScrollForJTable)
+                .addComponent(ScrollForJTable, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
                 .addContainerGap())
         );
         TablePanelLayout.setVerticalGroup(
@@ -238,13 +261,14 @@ public class ClassGenerator extends javax.swing.JFrame {
 
         FooterLabel.setForeground(new java.awt.Color(153, 255, 153));
         FooterLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        FooterLabel.setText("Iel Rebeque @fullmigasamurai");
+        FooterLabel.setText("Iel Rebeque @fullmigasamurai  ");
 
         RightPanel.setBackground(new java.awt.Color(51, 51, 51));
         RightPanel.setMaximumSize(new java.awt.Dimension(180, 178));
         RightPanel.setMinimumSize(new java.awt.Dimension(100, 100));
 
         readArq.setText("ReadArq");
+        readArq.setToolTipText("Reads a aconfig file. gets the name from conf");
         readArq.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 readArqActionPerformed(evt);
@@ -252,21 +276,23 @@ public class ClassGenerator extends javax.swing.JFrame {
         });
 
         generateArq.setText("Generate Arq");
+        generateArq.setToolTipText("Generate a conf file with table contents; Uses conf field to get the name");
         generateArq.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 generateArqActionPerformed(evt);
             }
         });
 
-        pathText.setMaximumSize(new java.awt.Dimension(180, 25));
-        pathText.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pathTextActionPerformed(evt);
+        confPathText.setToolTipText("Select a confgiguration file. csv type, two columns");
+        confPathText.setMaximumSize(new java.awt.Dimension(180, 25));
+        confPathText.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                confPathTextMouseClicked(evt);
             }
         });
-        pathText.addKeyListener(new java.awt.event.KeyAdapter() {
+        confPathText.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                pathTextKeyPressed(evt);
+                confPathTextKeyPressed(evt);
             }
         });
 
@@ -277,13 +303,14 @@ public class ClassGenerator extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel1.setForeground(new java.awt.Color(102, 255, 204));
         jLabel1.setText("Path:");
 
+        sourcePath.setToolTipText("Select the directory where the files will me changed recursively");
         sourcePath.setMaximumSize(new java.awt.Dimension(180, 25));
-        sourcePath.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sourcePathActionPerformed(evt);
+        sourcePath.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                sourcePathMouseClicked(evt);
             }
         });
         sourcePath.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -291,6 +318,9 @@ public class ClassGenerator extends javax.swing.JFrame {
                 sourcePathKeyPressed(evt);
             }
         });
+
+        jLabel2.setForeground(new java.awt.Color(102, 255, 153));
+        jLabel2.setText("Conf:");
 
         javax.swing.GroupLayout RightPanelLayout = new javax.swing.GroupLayout(RightPanel);
         RightPanel.setLayout(RightPanelLayout);
@@ -302,14 +332,14 @@ public class ClassGenerator extends javax.swing.JFrame {
                     .addComponent(readArq, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(generateArq, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(rename, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(RightPanelLayout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RightPanelLayout.createSequentialGroup()
                         .addGroup(RightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(pathText, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(RightPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(sourcePath, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(RightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(confPathText, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(sourcePath, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         RightPanelLayout.setVerticalGroup(
@@ -320,12 +350,14 @@ public class ClassGenerator extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(generateArq)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pathText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(RightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(confPathText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(RightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(sourcePath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(sourcePath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
                 .addComponent(rename)
                 .addContainerGap())
         );
@@ -334,7 +366,7 @@ public class ClassGenerator extends javax.swing.JFrame {
         usingArqLabel.setText("Utilizando Arquivo:");
 
         arqNameLabel.setForeground(new java.awt.Color(153, 255, 255));
-        arqNameLabel.setText(" ");
+        arqNameLabel.setText("none");
 
         javax.swing.GroupLayout BackGroundPanelLayout = new javax.swing.GroupLayout(BackGroundPanel);
         BackGroundPanel.setLayout(BackGroundPanelLayout);
@@ -353,7 +385,7 @@ public class ClassGenerator extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(arqNameLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(FooterLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 601, Short.MAX_VALUE))
+                                .addComponent(FooterLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(BackGroundPanelLayout.createSequentialGroup()
                                 .addComponent(TablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -389,74 +421,80 @@ public class ClassGenerator extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(BackGroundPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(BackGroundPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-	private void generateArqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateArqActionPerformed
-		// TODO add your handling code here:
-	}//GEN-LAST:event_generateArqActionPerformed
+	private void generateArqActionPerformed(java.awt.event.ActionEvent evt) {    
+		
+		saveArq(confPathText.getText());
+	
+	}
 
-	private void pathTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pathTextActionPerformed
-		// TODO add your handling code here:
-	}//GEN-LAST:event_pathTextActionPerformed
-
-	private void renameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_renameActionPerformed
+	private void renameActionPerformed(java.awt.event.ActionEvent evt) {                                       
 		HashMap<String, String> tableMap = readTable(table);
 		if (tableMap != null) {
 			ArqSelector arqManipulator = new ArqSelector(tableMap);
-			// ArqSelector arqManipulator = new ArqSelector();
-			// if (sourcePath.getText() == "" || sourcePath.getText() == null)
-			// 	arqManipulator.listFolder(new java.io.File(System.getProperty("user.dir")));
-			// else
+			if (sourcePath.getText() == "" || sourcePath.getText() == null)
+				arqManipulator.listFolder(new java.io.File(System.getProperty("user.dir")));
+			else
 				arqManipulator.listFolder(new java.io.File(sourcePath.getText()));
-			// arqManipulator.listFolder(new java.io.File("./tmp/NovaPasta"));
+			
 		}
 
 
-	}//GEN-LAST:event_renameActionPerformed
+	}
 
-	private void readArqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_readArqActionPerformed
-		if (loadArq(pathText.getText()) == false) {
+	private void readArqActionPerformed(java.awt.event.ActionEvent evt) {
+		if (loadArq(confPathText.getText()) == false) {
 			if (JOptionPane.showConfirmDialog(this, "Impossivel abrir arquivo para leitura\nDeseja escolher outro arquivo?",
 					"Erro ao abrir arquivo", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
-				loadCSV();
-				loadArq(pathText.getText());
+				setCSV();
+				loadArq(confPathText.getText());
 			}
 		}
-	}//GEN-LAST:event_readArqActionPerformed
+	}
 
-	private void pathTextKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pathTextKeyPressed
+	private void confPathTextKeyPressed(java.awt.event.KeyEvent evt) {
 		if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
 			
-			if (loadArq(pathText.getText()) == false) {
+			if (loadArq(confPathText.getText()) == false) {
 				if (JOptionPane.showConfirmDialog(this, "Impossivel abrir arquivo para leitura\nDeseja escolher outro arquivo?",
 						"Erro ao abrir arquivo", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
-					loadCSV();
-					loadArq(pathText.getText());
+					setCSV();
+					loadArq(confPathText.getText());
 				}
 			}
 		}
-	}//GEN-LAST:event_pathTextKeyPressed
+	}
 
-	private void tableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableKeyPressed
+	private void tableKeyPressed(java.awt.event.KeyEvent evt) {
 		if (evt.getKeyCode() == KeyEvent.VK_DELETE) {
 			cleanTable();
 			System.out.println("del");
 		}
-	}//GEN-LAST:event_tableKeyPressed
+	}
 
-    private void sourcePathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sourcePathActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_sourcePathActionPerformed
-
-    private void sourcePathKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sourcePathKeyPressed
+    private void sourcePathKeyPressed(java.awt.event.KeyEvent evt) {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             sourcePath.setText(getFolderPath());
         }
-    }//GEN-LAST:event_sourcePathKeyPressed
+    }
+
+    private void sourcePathMouseClicked(java.awt.event.MouseEvent evt) {
+        if (evt.getClickCount() == 2) {
+            sourcePath.setText(getFolderPath());
+        }
+    }
+
+    private void confPathTextMouseClicked(java.awt.event.MouseEvent evt) {
+        if (evt.getClickCount() == 2) {
+            confPathText.setText(getFolderPath());
+        }
+    }
 
 	/**
 	 * @param args the command line arguments
@@ -508,9 +546,10 @@ public class ClassGenerator extends javax.swing.JFrame {
     private javax.swing.JPanel TablePanel;
     private javax.swing.JLabel TittleLabe;
     private javax.swing.JLabel arqNameLabel;
+    private javax.swing.JTextField confPathText;
     private javax.swing.JButton generateArq;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextField pathText;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JButton readArq;
     private javax.swing.JButton rename;
     private javax.swing.JTextField sourcePath;
