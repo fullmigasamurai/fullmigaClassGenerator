@@ -40,8 +40,7 @@ public class ArqSelector {
 		changes = map;
 		
 		changes.forEach((key1, key2) -> {
-			System.out.println("key1: " + key1 + "\n____");
-			System.out.println("key2: " + key2 + "\n____");
+			System.out.println("replacements: " + key1 + "->" + key2 + "\n____");
 		});
 		
 	}

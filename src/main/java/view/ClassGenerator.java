@@ -30,6 +30,22 @@ public class ClassGenerator extends javax.swing.JFrame {
 	public ClassGenerator() {
 		initComponents();
 	}
+	public boolean isArq (String name){
+		java.io.BufferedReader reader = null;
+		try {
+			reader = new java.io.BufferedReader(new java.io.FileReader(name));
+			reader.close();
+
+		} catch (FileNotFoundException ex) {
+
+			return false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		} 
+
+		return true;
+	}
 	public boolean loadArq(String name) {
 		java.io.BufferedReader reader = null;
 		try {
@@ -48,24 +64,24 @@ public class ClassGenerator extends javax.swing.JFrame {
 			for (int i = 0; i < 8 && (nextLine = reader.readLine()) != null; i++) {
 				String split[] = nextLine.split(";");
 				if (split.length < 2) {
-					readingErrors+="Erro ao ler a linha " + i+1 + "\n";
+					readingErrors+="Error reading line " + i+1 + "\n";
 				} else {
 					table.setValueAt(split[0], i, 0);
 					table.setValueAt(split[1], i, 1);
 				}
 			}
 			if (readingErrors != "")
-				JOptionPane.showMessageDialog(this, "Erro ao ler o arquivo, é preciso ter 2 colunas\n"+readingErrors);
+				JOptionPane.showMessageDialog(this, "Error reading file, msut have 2 columns\n"+readingErrors);
 			reader.close();
 			System.out.println("Arq Ready");
 			arqNameLabel.setText(new java.io.File(name).getName().replace(".csv", ""));
 
 		} catch (IOException ex) {
-			JOptionPane.showMessageDialog(this, "Erro ao ler o arquivo");
+			JOptionPane.showMessageDialog(this, "Error reading file");
 			return false;
 
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(this, "Erro ao ler o arquivo");
+			JOptionPane.showMessageDialog(this, "Error reading file");
 		}
 
 		return true;
@@ -76,7 +92,7 @@ public class ClassGenerator extends javax.swing.JFrame {
         try {
             writer = new java.io.BufferedWriter(new java.io.FileWriter(nome + ".csv"));
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Impossivel abrir arquivo para gravação");
+            JOptionPane.showMessageDialog(this, "File could not be opened to writing");
         } finally {
             try {
 				HashMap<String, String> data = readTable(table);
@@ -90,7 +106,7 @@ public class ClassGenerator extends javax.swing.JFrame {
 
                 writer.close();
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Erro, a gravação não foi efetuada com sucesso");
+                JOptionPane.showMessageDialog(this, "Error, writing not succed");
 
             }
         }
@@ -111,7 +127,7 @@ public class ClassGenerator extends javax.swing.JFrame {
 		if (retorno == javax.swing.JFileChooser.APPROVE_OPTION) {
 			confPathText.setText(arq.getSelectedFile().getAbsolutePath());
 		} else if (retorno != javax.swing.JFileChooser.CANCEL_OPTION) {
-			JOptionPane.showMessageDialog(rootPane, "Não foi Possivel Abrir o Arquivo");
+			JOptionPane.showMessageDialog(rootPane, "Fail to select file");
 		}
 	}
 
@@ -129,7 +145,7 @@ public class ClassGenerator extends javax.swing.JFrame {
 		if (retorno == javax.swing.JFileChooser.APPROVE_OPTION) {
 			return arq.getSelectedFile().getAbsolutePath();
 		} else if (retorno != javax.swing.JFileChooser.CANCEL_OPTION) {
-			JOptionPane.showMessageDialog(rootPane, "Não foi Possivel Selecionar o diretorio");
+			JOptionPane.showMessageDialog(rootPane, "Fail to select directory");
 			return null;
 		}
 		
@@ -148,7 +164,7 @@ public class ClassGenerator extends javax.swing.JFrame {
 				&& tab.getValueAt(i, 1) != null 
 				&& tab.getValueAt(i, 1) != "") {
 
-				System.out.println("data: " + tab.getValueAt(i, 1) + "\n____");
+				// System.out.println("data: " + tab.getValueAt(i, 1) + "\n____");
 				table.put((String) tab.getValueAt(i, 0), (String) tab.getValueAt(i, 1));
 			}
 
@@ -179,6 +195,28 @@ public class ClassGenerator extends javax.swing.JFrame {
 		arqNameLabel.setText("");
 	}
 
+	public void renameArqs() {
+
+		HashMap<String, String> tableMap = readTable(table);
+		if (tableMap != null) {
+			ArqSelector arqManipulator = new ArqSelector(tableMap);
+			if (sourcePath.getText().isEmpty() ) {
+				arqManipulator.listFolder(new java.io.File(System.getProperty("user.dir")));
+				System.out.println("renaming at usr dir: " + System.getProperty("user.dir"));
+			} else {
+				if (isArq(sourcePath.getText())) {
+				arqManipulator.listFolder(new java.io.File(sourcePath.getText()));
+					System.out.println("renaming at: sourcepath:" + sourcePath.getText() + ":");
+				}
+				else if (JOptionPane.showConfirmDialog(this, "Destination canot be resolved, Wanna choose another?",
+					"Error Path not found", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
+						sourcePath.setText(getFolderPath());
+				}
+			}
+			
+		}
+	}
+
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -206,6 +244,7 @@ public class ClassGenerator extends javax.swing.JFrame {
         arqNameLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("ClassGenerator");
         setBackground(new java.awt.Color(51, 0, 51));
         setMinimumSize(new java.awt.Dimension(750, 300));
 
@@ -429,29 +468,36 @@ public class ClassGenerator extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
 	private void generateArqActionPerformed(java.awt.event.ActionEvent evt) {    
-		
 		saveArq(confPathText.getText());
 	
 	}
 
 	private void renameActionPerformed(java.awt.event.ActionEvent evt) {                                       
-		HashMap<String, String> tableMap = readTable(table);
-		if (tableMap != null) {
-			ArqSelector arqManipulator = new ArqSelector(tableMap);
-			if (sourcePath.getText() == "" || sourcePath.getText() == null)
-				arqManipulator.listFolder(new java.io.File(System.getProperty("user.dir")));
-			else
-				arqManipulator.listFolder(new java.io.File(sourcePath.getText()));
-			
-		}
-
+		renameArqs();
 
 	}
 
+	private void sourcePathKeyPressed(java.awt.event.KeyEvent evt) {
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+			if (sourcePath.getText().isEmpty()) {
+				sourcePath.setText(getFolderPath());
+			}
+			else {
+				renameArqs();
+			}
+        }
+    }
+
+    private void sourcePathMouseClicked(java.awt.event.MouseEvent evt) {
+        if (evt.getClickCount() == 2) {
+            sourcePath.setText(getFolderPath());
+        }
+    }
+
 	private void readArqActionPerformed(java.awt.event.ActionEvent evt) {
 		if (loadArq(confPathText.getText()) == false) {
-			if (JOptionPane.showConfirmDialog(this, "Impossivel abrir arquivo para leitura\nDeseja escolher outro arquivo?",
-					"Erro ao abrir arquivo", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
+			if (JOptionPane.showConfirmDialog(this, "File canot be opened for reading \nSelect another file?",
+					"Error Opening File", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
 				setCSV();
 				loadArq(confPathText.getText());
 			}
@@ -462,8 +508,8 @@ public class ClassGenerator extends javax.swing.JFrame {
 		if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
 			
 			if (loadArq(confPathText.getText()) == false) {
-				if (JOptionPane.showConfirmDialog(this, "Impossivel abrir arquivo para leitura\nDeseja escolher outro arquivo?",
-						"Erro ao abrir arquivo", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
+				if (JOptionPane.showConfirmDialog(this, "File canot be opened for reading \nSelect another file?",
+						"Error Opening File", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
 					setCSV();
 					loadArq(confPathText.getText());
 				}
@@ -477,18 +523,6 @@ public class ClassGenerator extends javax.swing.JFrame {
 			System.out.println("del");
 		}
 	}
-
-    private void sourcePathKeyPressed(java.awt.event.KeyEvent evt) {
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            sourcePath.setText(getFolderPath());
-        }
-    }
-
-    private void sourcePathMouseClicked(java.awt.event.MouseEvent evt) {
-        if (evt.getClickCount() == 2) {
-            sourcePath.setText(getFolderPath());
-        }
-    }
 
     private void confPathTextMouseClicked(java.awt.event.MouseEvent evt) {
         if (evt.getClickCount() == 2) {
