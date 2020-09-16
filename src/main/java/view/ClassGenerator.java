@@ -64,7 +64,7 @@ public class ClassGenerator extends javax.swing.JFrame {
 			for (int i = 0; i < 8 && (nextLine = reader.readLine()) != null; i++) {
 				String split[] = nextLine.split(";");
 				if (split.length < 2) {
-					readingErrors+="Error reading line " + i+1 + "\n";
+					readingErrors+="Error reading line " + (i+1) + "\n";
 				} else {
 					table.setValueAt(split[0], i, 0);
 					table.setValueAt(split[1], i, 1);
