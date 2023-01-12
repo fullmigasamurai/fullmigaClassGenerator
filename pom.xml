@@ -36,11 +36,6 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>unknown.binary</groupId>
-          <artifactId>AbsoluteLayout</artifactId>
-          <version>SNAPSHOT</version>
-      </dependency>
   </dependencies>
   <reporting>
     <plugins>
@@ -71,17 +66,12 @@
       </build>
     </profile>
   </profiles>
-    <repositories>
-        <repository>
-            <id>unknown-jars-temp-repo</id>
-            <name>A temporary repository created by NetBeans for libraries and jars it could not identify. Please replace the dependencies in this repository with correct ones and delete this repository.</name>
-            <url>file:${project.basedir}/lib</url>
-        </repository>
-		<repository>
-			<id>netbeans</id>
-			<name>Netbeans rep</name>
-			<url>http://bits.netbeans.org/maven2/</url>
-		</repository>
-    </repositories>
-
+<repositories>
+    <repository>
+        <id>netbeans</id>
+        <name>Netbeans rep</name>
+        <url>http://bits.netbeans.org/maven2/</url>
+    </repository>
+</repositories>
+    <name>fullmigaClassGenerator(CLONE)</name>
 </project>

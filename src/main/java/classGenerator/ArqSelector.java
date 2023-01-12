@@ -53,7 +53,6 @@ public class ArqSelector {
 				return pathname.isDirectory();
 			}
 		});
-		// System.out.println("\n\nDirectory of " + dir.getAbsolutePath());
 		
 		for (File folder: subDir) {
 			listFolder(folder);
