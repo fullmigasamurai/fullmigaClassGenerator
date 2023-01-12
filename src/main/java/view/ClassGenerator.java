@@ -164,7 +164,6 @@ public class ClassGenerator extends javax.swing.JFrame {
 				&& tab.getValueAt(i, 1) != null 
 				&& tab.getValueAt(i, 1) != "") {
 
-				// System.out.println("data: " + tab.getValueAt(i, 1) + "\n____");
 				table.put((String) tab.getValueAt(i, 0), (String) tab.getValueAt(i, 1));
 			}
 
@@ -181,10 +180,7 @@ public class ClassGenerator extends javax.swing.JFrame {
 		System.out.println("in clean");
 		
 		for (int i = 0; i < row; i++) {
-			// System.out.println("data: " + table.isRowSelected(i) + "\n____");
-			// System.out.println("tab.getValueAt(i, 0): " + table.getValueAt(i, 0) + "\n____");
 			if (table.isRowSelected(i)){
-				// System.out.println("Selected Row: " + i + "\n____");
 				for (int j = 0; j < col; j++) {
 					table.setValueAt(null, i, j);
 				}
